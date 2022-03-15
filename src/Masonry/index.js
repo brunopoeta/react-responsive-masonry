@@ -4,13 +4,41 @@ import React from "react"
 class Masonry extends React.Component {
   getColumns() {
     const {children, columnsCount} = this.props
-    const columns = Array.from({length: columnsCount}, () => [])
+    let columns
+    let handledColumnsCount = columnsCount
+    let validItems = 0
 
     React.Children.forEach(children, (child, index) => {
-      if (child && React.isValidElement(child)) {
-        columns[index % columnsCount].push(child)
+      if (
+        child &&
+        React.isValidElement(child) &&
+        Boolean(child.type) !== null
+      ) {
+        validItems++
       }
     })
+
+    if (columnsCount > validItems) {
+      handledColumnsCount = validItems
+    }
+
+    columns = Array.from({length: handledColumnsCount}, () => [])
+
+    React.Children.toArray(children)
+      .filter((child, index) => {
+        return (
+          child && React.isValidElement(child) && Boolean(child.type) !== null
+        )
+      })
+      .forEach((child, index) => {
+        if (
+          child &&
+          React.isValidElement(child) &&
+          Boolean(child.type) !== null
+        ) {
+          columns[index % handledColumnsCount].push(child)
+        }
+      })
 
     return columns
   }
@@ -19,7 +47,7 @@ class Masonry extends React.Component {
     const {gutter} = this.props
     return this.getColumns().map((column, i) => (
       <div
-        key={i}
+        key={`masonryColumn${i}`}
         style={{
           display: "flex",
           flexDirection: "column",

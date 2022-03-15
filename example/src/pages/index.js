@@ -1,8 +1,8 @@
-import React from "react"
+import React, {useState} from "react"
 
 import Masonry, {ResponsiveMasonry} from "../../../src"
 
-const images = [
+const baseImages = [
   "https://picsum.photos/200/300?image=1050",
   "https://picsum.photos/400/400?image=1039",
   "https://picsum.photos/400/400?image=1080",
@@ -14,19 +14,32 @@ const images = [
   "https://picsum.photos/300/300?image=206",
 ]
 
-const PageIndex = () => (
-  <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}>
-    <Masonry columnsCount={3} gutter="10px">
-      {images.map((image, i) => (
-        <img
-          key={i}
-          src={image}
-          alt=""
-          style={{width: "100%", display: "block"}}
-        />
-      ))}
-    </Masonry>
-  </ResponsiveMasonry>
-)
+const PageIndex = () => {
+  const [images, setImages] = useState(baseImages)
+
+  const updateImages = useCallback(() => {
+    const images = baseImages.splice(0, 4)
+
+    setImages(images)
+  }, [])
+
+  return (
+    <>
+      <button onClick={updateImages}>Update images</button>
+      <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}>
+        <Masonry columnsCount={3} gutter="10px">
+          {images.map((image, i) => (
+            <img
+              key={i}
+              src={image}
+              alt=""
+              style={{width: "100%", display: "block"}}
+            />
+          ))}
+        </Masonry>
+      </ResponsiveMasonry>
+    </>
+  )
+}
 
 export default PageIndex

@@ -1,10 +1,10 @@
-import React from "react"
+import React, {useCallback, useState} from "react"
 import {Html} from "react-demo-page"
 
 import html from "./index.md"
 import Masonry from "../../../../src"
 
-const images = [
+const baseImages = [
   "https://picsum.photos/200/300?image=1050",
   "https://picsum.photos/400/400?image=1039",
   "https://picsum.photos/400/400?image=1080",
@@ -16,21 +16,30 @@ const images = [
   "https://picsum.photos/300/300?image=206",
 ]
 
-export default class ExampleMasonry extends React.Component {
-  render() {
-    return (
-      <div>
-        <Html html={html} color="#44B39D" />
-        <Masonry columnsCount={3} gutter="10px">
-          {images.map((image, i) => (
-            <img
-              key={i}
-              src={image}
-              style={{width: "100%", display: "block"}}
-            />
-          ))}
-        </Masonry>
-      </div>
-    )
-  }
+const ExampleMasonry = () => {
+  const [hidden, setHidden] = useState(false)
+  const [images, setImages] = useState(baseImages)
+
+  const updateImages = useCallback(() => {
+    // const images = baseImages.splice(0, 4);
+
+    // setImages(images);
+    setHidden(!hidden)
+  }, [hidden])
+
+  return (
+    <div>
+      <button onClick={updateImages}>Update Images</button>
+      <Html html={html} color="#44B39D" />
+      <Masonry columnsCount={3} gutter="10px">
+        <img src={images[0]} style={{width: "100%", display: "block"}} />
+        {!hidden && (
+          <img src={images[1]} style={{width: "100%", display: "block"}} />
+        )}
+        <img src={images[2]} style={{width: "100%", display: "block"}} />
+      </Masonry>
+    </div>
+  )
 }
+
+export default ExampleMasonry
